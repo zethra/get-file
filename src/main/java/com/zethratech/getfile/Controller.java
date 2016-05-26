@@ -1,6 +1,5 @@
 package com.zethratech.getfile;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
@@ -27,7 +26,7 @@ public class Controller {
     public ImageView qrCode;
 
     @FXML
-    public void handleSelectFile(ActionEvent event) {
+    public void handleSelectFile() {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile == null || !selectedFile.exists())
@@ -44,7 +43,7 @@ public class Controller {
     }
 
     @FXML
-    public void handleSettings(ActionEvent event) {
+    public void handleSettings() {
         if (handler.getInterfaces() == null) {
             try {
                 handler.generateInterfaceList();

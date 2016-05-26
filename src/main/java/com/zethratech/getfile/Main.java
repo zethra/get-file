@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.eclipse.jetty.server.Server;
 
@@ -26,6 +27,7 @@ public class Main extends Application {
         handler.generateInterfaceList();
         Scene scene = new Scene(root);
         primaryStage.setTitle("Get File");
+        primaryStage.getIcons().add(new Image("file:file-upload-icon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
     }

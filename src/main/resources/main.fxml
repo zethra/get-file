@@ -14,16 +14,19 @@
             GridPane.columnIndex="0"
             GridPane.rowIndex="0"
             GridPane.columnSpan="2"
+            GridPane.halignment="CENTER"
             fx:id="qrCode">
         <Image url="file-upload-icon.png"/>
     </ImageView>
 
     <Button text="Select File"
+            GridPane.halignment="LEFT"
             GridPane.columnIndex="0"
             GridPane.rowIndex="1"
             onAction="#handleSelectFile"/>
 
     <Button text="Settings"
+            GridPane.halignment="RIGHT"
             GridPane.columnIndex="1"
             GridPane.rowIndex="1"
             onAction="#handleSettings"/>
