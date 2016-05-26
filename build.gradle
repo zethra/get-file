@@ -1,0 +1,18 @@
+group 'com.zethratech'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.zethratech.getfile.GetFile"
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.kenglxn.QRGen:javase:2.1.0'
+    compile 'org.eclipse.jetty:jetty-server:9.0.2.v20130417'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
