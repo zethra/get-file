@@ -1,8 +1,5 @@
 package com.zethratech.getfile;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import net.glxn.qrgen.javase.QRCode;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -18,11 +15,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -42,15 +36,11 @@ public class GetFile {
         Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
         for (; n.hasMoreElements(); ) {
             NetworkInterface e = n.nextElement();
-
-//            System.out.println(e.getDisplayName());
-
             Enumeration<InetAddress> a = e.getInetAddresses();
             for (; a.hasMoreElements(); ) {
                 InetAddress addr = a.nextElement();
                 if (validIP(addr.getHostAddress()) && !addr.getHostAddress().equals("127.0.0.1"))
                     interfaces.add(new IpInterface(e.getDisplayName(), addr.getHostAddress()));
-//                System.out.println("  " + addr.getHostAddress());
             }
         }
         System.out.println(interfaces);
