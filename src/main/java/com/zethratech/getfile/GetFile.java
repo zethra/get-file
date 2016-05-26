@@ -28,9 +28,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author Ben Goldberg
@@ -38,21 +37,24 @@ import java.util.Map;
 public class GetFile {
     public static void main(String[] args) throws IOException {
         Map<String, File> files = new HashMap<>();
+        List<IpInterface> interfaces = new ArrayList<>();
 
         Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
-        for (; n.hasMoreElements();)
-        {
+        for (; n.hasMoreElements();) {
             NetworkInterface e = n.nextElement();
 
-            System.out.println(e.getDisplayName());
+//            System.out.println(e.getDisplayName());
 
             Enumeration<InetAddress> a = e.getInetAddresses();
             for (; a.hasMoreElements();)
             {
                 InetAddress addr = a.nextElement();
-                System.out.println("  " + addr.getHostAddress());
+                if (validIP(addr.getHostAddress()) && !addr.getHostAddress().equals("127.0.0.1"))
+                    interfaces.add(new IpInterface(e.getDisplayName(), addr.getHostAddress()));
+//                System.out.println("  " + addr.getHostAddress());
             }
         }
+        System.out.println(interfaces);
 
         JLabel qrLable = new JLabel();
         JPanel controlPanel = new JPanel();
@@ -140,10 +142,37 @@ public class GetFile {
         return result;
     }
 
-    static String readFile(String path, Charset encoding)
+    private static String readFile(String path, Charset encoding)
             throws IOException
     {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
+    }
+
+    private static boolean validIP (String ip) {
+        try {
+            if ( ip == null || ip.isEmpty() ) {
+                return false;
+            }
+
+            String[] parts = ip.split( "\\." );
+            if ( parts.length != 4 ) {
+                return false;
+            }
+
+            for ( String s : parts ) {
+                int i = Integer.parseInt( s );
+                if ( (i < 0) || (i > 255) ) {
+                    return false;
+                }
+            }
+            if ( ip.endsWith(".") ) {
+                return false;
+            }
+
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 }
