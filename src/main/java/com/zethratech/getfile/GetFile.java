@@ -44,6 +44,8 @@ public class GetFile {
         {
             NetworkInterface e = n.nextElement();
 
+            System.out.println(e.getDisplayName());
+
             Enumeration<InetAddress> a = e.getInetAddresses();
             for (; a.hasMoreElements();)
             {
