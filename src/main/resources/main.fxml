@@ -2,14 +2,17 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane prefHeight="250" prefWidth="250" xmlns:fx="http://javafx.com/fmxl/1"
           fx:controller="com.zethratech.getfile.Controller" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
-        <ImageView
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="0"
-               fx:id="qrCode"/>
+    <ImageView
+            GridPane.columnIndex="0"
+            GridPane.rowIndex="0"
+            fx:id="qrCode">
+        <Image url="file-upload-icon.jpg"/>
+    </ImageView>
 
         <Button text="Select File"
                 GridPane.columnIndex="0"

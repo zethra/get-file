@@ -5,10 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import net.glxn.qrgen.javase.QRCode;
 import org.eclipse.jetty.server.Server;
-
-import java.io.File;
 
 public class Main extends Application {
 
@@ -26,19 +23,22 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         controller.init(server, handler);
+        handler.generateInterfaceList();
         Scene scene = new Scene(root);
         primaryStage.setTitle("Get File");
         primaryStage.setScene(scene);
-
-
-
         primaryStage.show();
     }
 
-    public String getQRCode(String fileName) {
-        File file = QRCode.from("http://" + handler.getInterfaces().get(0).getAdress() + ":8080/get?file=" + fileName)
-                .file();
-        return file.getAbsolutePath();
+    @Override
+    public void stop(){
+        if (!server.isStopped()) {
+            try {
+                server.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {

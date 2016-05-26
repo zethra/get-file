@@ -39,6 +39,10 @@ public class HTTPHandler extends AbstractHandler {
                 }
                 Map<String, String> params = queryToMap(request.getQueryString());
                 String fileName = params.get("file");
+                if (file == null) {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    return;
+                }
                 if (fileName == null || !fileName.equals(file.getName())) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     return;
@@ -61,6 +65,7 @@ public class HTTPHandler extends AbstractHandler {
     }
 
     public void generateInterfaceList() throws SocketException {
+        interfaces = new ArrayList<>();
         Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
         for (; n.hasMoreElements(); ) {
             NetworkInterface e = n.nextElement();
@@ -74,7 +79,7 @@ public class HTTPHandler extends AbstractHandler {
     }
 
     private static Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
         for (String param : query.split("&")) {
             String pair[] = param.split("=");
             if (pair.length > 1) {
