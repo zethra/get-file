@@ -20,6 +20,7 @@ import java.util.*;
 public class HTTPHandler extends AbstractHandler {
 
     private List<IpInterface> interfaces = null;
+    private IpInterface defaultInterface = null;
     private File file = null;
 
     @Override
@@ -64,6 +65,14 @@ public class HTTPHandler extends AbstractHandler {
         return interfaces;
     }
 
+    public IpInterface getDefaultInterface() {
+        return defaultInterface;
+    }
+
+    public void setDefaultInterface(IpInterface defaultInterface) {
+        this.defaultInterface = defaultInterface;
+    }
+
     public void generateInterfaceList() throws SocketException {
         interfaces = new ArrayList<>();
         Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
@@ -76,6 +85,8 @@ public class HTTPHandler extends AbstractHandler {
                     interfaces.add(new IpInterface(e.getDisplayName(), addr.getHostAddress()));
             }
         }
+        if (defaultInterface == null)
+            defaultInterface = interfaces.get(0);
     }
 
     private static Map<String, String> queryToMap(String query) {

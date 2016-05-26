@@ -31,7 +31,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         if (!server.isStopped()) {
             try {
                 server.stop();

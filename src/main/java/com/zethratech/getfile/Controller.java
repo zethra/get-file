@@ -2,6 +2,7 @@ package com.zethratech.getfile;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -9,6 +10,8 @@ import net.glxn.qrgen.javase.QRCode;
 import org.eclipse.jetty.server.Server;
 
 import java.io.File;
+import java.net.SocketException;
+import java.util.Optional;
 
 public class Controller {
 
@@ -21,15 +24,15 @@ public class Controller {
     }
 
     @FXML
-    private ImageView qrCode;
+    public ImageView qrCode;
 
     @FXML
-    private void handleSelectFile(ActionEvent event) {
+    public void handleSelectFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile == null || !selectedFile.exists())
             return;
-        if(!server.isStarted()) {
+        if (!server.isStarted()) {
             try {
                 server.start();
             } catch (Exception e) {
@@ -38,6 +41,23 @@ public class Controller {
         }
         handler.setFile(selectedFile);
         qrCode.setImage(new Image(getQRCode(selectedFile.getName())));
+    }
+
+    @FXML
+    public void handleSettings(ActionEvent event) {
+        if (handler.getInterfaces() == null) {
+            try {
+                handler.generateInterfaceList();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        ChoiceDialog<IpInterface> dialog = new ChoiceDialog<>(handler.getDefaultInterface(), handler.getInterfaces());
+        dialog.setTitle("Settings");
+        dialog.setHeaderText("Settings");
+        dialog.setContentText("Select an interface:");
+        Optional<IpInterface> result = dialog.showAndWait();
+        result.ifPresent(selectedInterface -> handler.setDefaultInterface(selectedInterface));
     }
 
     public String getQRCode(String fileName) {
