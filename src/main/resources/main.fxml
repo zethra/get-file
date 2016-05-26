@@ -15,7 +15,7 @@
             GridPane.rowIndex="0"
             GridPane.columnSpan="2"
             fx:id="qrCode">
-        <Image url="file-upload-icon.jpg"/>
+        <Image url="file-upload-icon.png"/>
     </ImageView>
 
     <Button text="Select File"
