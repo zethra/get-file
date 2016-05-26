@@ -40,14 +40,13 @@ public class GetFile {
         List<IpInterface> interfaces = new ArrayList<>();
 
         Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
-        for (; n.hasMoreElements();) {
+        for (; n.hasMoreElements(); ) {
             NetworkInterface e = n.nextElement();
 
 //            System.out.println(e.getDisplayName());
 
             Enumeration<InetAddress> a = e.getInetAddresses();
-            for (; a.hasMoreElements();)
-            {
+            for (; a.hasMoreElements(); ) {
                 InetAddress addr = a.nextElement();
                 if (validIP(addr.getHostAddress()) && !addr.getHostAddress().equals("127.0.0.1"))
                     interfaces.add(new IpInterface(e.getDisplayName(), addr.getHostAddress()));
@@ -57,6 +56,9 @@ public class GetFile {
         System.out.println(interfaces);
 
         JLabel qrLable = new JLabel();
+        JPanel qrPanel = new JPanel();
+        qrPanel.add(qrLable);
+        qrPanel.setLayout(new FlowLayout());
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout());
         JButton selectButton = new JButton("Select Files");
@@ -68,7 +70,8 @@ public class GetFile {
                 File selectedFile = fileChooser.getSelectedFile();
                 files.put(selectedFile.getName(), selectedFile);
                 System.out.println(selectedFile.getName());
-                File file = QRCode.from("http://" + "" +":8080/get?file=" + selectedFile.getName()).file();
+                File file = QRCode.from("http://" + interfaces.get(0).getAdress() + ":8080/get?file=" + selectedFile.getName())
+                        .file();
                 BufferedImage qrCode = null;
                 try {
                     qrCode = ImageIO.read(file);
@@ -83,14 +86,14 @@ public class GetFile {
         controlPanel.add(selectButton);
 
         JFrame mainFrame = new JFrame("Get File");
-        mainFrame.setSize(400, 400);
+        mainFrame.setSize(300, 300);
         mainFrame.setLayout(new GridLayout(2, 1));
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
                 System.exit(0);
             }
         });
-        mainFrame.add(qrLable);
+        mainFrame.add(qrPanel);
         mainFrame.add(controlPanel);
         mainFrame.setVisible(true);
 
@@ -103,22 +106,27 @@ public class GetFile {
                                HttpServletResponse response)
                     throws IOException, ServletException {
 
-                baseRequest.setHandled(true);
-                if(request.getQueryString() == null){
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
-                Map<String, String> params = queryToMap(request.getQueryString());
-                String fileName = params.get("file");
-                if(fileName == null){
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
+                System.out.println(target);
+                switch (target) {
+                    case "/get":
+                        baseRequest.setHandled(true);
+                        if (request.getQueryString() == null) {
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            return;
+                        }
+                        Map<String, String> params = queryToMap(request.getQueryString());
+                        String fileName = params.get("file");
+                        if (fileName == null) {
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            return;
+                        }
 
-                response.setContentType("application/octet-stream");
-                response.setHeader("Content-Disposition", "attachment; filename=\"test\"");
-                response.getWriter().write(readFile(files.get(fileName).getAbsolutePath(), StandardCharsets.UTF_8));
-                response.setStatus(HttpServletResponse.SC_OK);
+                        response.setContentType("application/octet-stream");
+                        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                        response.getWriter().write(readFile(files.get(fileName).getAbsolutePath(), StandardCharsets.UTF_8));
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        break;
+                }
             }
         });
         try {
@@ -143,30 +151,29 @@ public class GetFile {
     }
 
     private static String readFile(String path, Charset encoding)
-            throws IOException
-    {
+            throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }
 
-    private static boolean validIP (String ip) {
+    private static boolean validIP(String ip) {
         try {
-            if ( ip == null || ip.isEmpty() ) {
+            if (ip == null || ip.isEmpty()) {
                 return false;
             }
 
-            String[] parts = ip.split( "\\." );
-            if ( parts.length != 4 ) {
+            String[] parts = ip.split("\\.");
+            if (parts.length != 4) {
                 return false;
             }
 
-            for ( String s : parts ) {
-                int i = Integer.parseInt( s );
-                if ( (i < 0) || (i > 255) ) {
+            for (String s : parts) {
+                int i = Integer.parseInt(s);
+                if ((i < 0) || (i > 255)) {
                     return false;
                 }
             }
-            if ( ip.endsWith(".") ) {
+            if (ip.endsWith(".")) {
                 return false;
             }
 
