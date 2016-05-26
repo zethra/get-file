@@ -12,13 +12,15 @@ public class Controller {
     public Server server;
     public HTTPHandler handler;
 
-    public Controller(Server server, HTTPHandler handler) {
+    public void init(Server server, HTTPHandler handler) {
         this.server = server;
         this.handler = handler;
     }
 
     @FXML
     private ImageView qrCode;
+
+
 
     @FXML
     private void handleSelectFile(ActionEvent event) {

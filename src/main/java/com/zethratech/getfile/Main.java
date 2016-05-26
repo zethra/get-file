@@ -23,9 +23,9 @@ public class Main extends Application {
         server.setHandler(handler);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
-        Controller controller = new Controller(server, handler);
-        loader.setController(controller);
         Parent root = loader.load();
+        Controller controller = loader.getController();
+        controller.init(server, handler);
         Scene scene = new Scene(root);
         primaryStage.setTitle("Get File");
         primaryStage.setScene(scene);
