@@ -9,7 +9,9 @@ import net.glxn.qrgen.javase.QRCode;
 import org.eclipse.jetty.server.Server;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
+import java.net.URLEncoder;
 import java.util.Optional;
 
 public class Controller {
@@ -60,7 +62,13 @@ public class Controller {
     }
 
     public String getQRCode(String fileName) {
-        File file = QRCode.from("http://" + handler.getInterfaces().get(0).getAdress() + ":8080/get?file=" + fileName)
+        String url = null;
+        try {
+            url = URLEncoder.encode(fileName, "ASCII");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        File file = QRCode.from("http://" + handler.getInterfaces().get(0).getAdress() + ":8080/get?file=" + url)
                 .file();
         return file.toURI().toString();
     }
