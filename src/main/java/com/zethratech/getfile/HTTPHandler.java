@@ -61,6 +61,10 @@ public class HTTPHandler extends AbstractHandler {
         this.file = file;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     public List<IpInterface> getInterfaces() {
         return interfaces;
     }

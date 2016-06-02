@@ -16,6 +16,7 @@ public class Controller {
 
     public Server server;
     public HTTPHandler handler;
+    private boolean isQrCode = false;
 
     public void init(Server server, HTTPHandler handler) {
         this.server = server;
@@ -40,6 +41,7 @@ public class Controller {
         }
         handler.setFile(selectedFile);
         qrCode.setImage(new Image(getQRCode(selectedFile.getName())));
+        isQrCode = true;
     }
 
     @FXML
@@ -57,10 +59,12 @@ public class Controller {
         dialog.setContentText("Select an interface:");
         Optional<IpInterface> result = dialog.showAndWait();
         result.ifPresent(selectedInterface -> handler.setDefaultInterface(selectedInterface));
+        if(isQrCode)
+            qrCode.setImage(new Image(getQRCode(handler.getFile().getName())));
     }
 
     public String getQRCode(String fileName) {
-        File file = QRCode.from("http://" + handler.getInterfaces().get(0).getAdress() + ":8080/get?file=" + fileName)
+        File file = QRCode.from("http://" + handler.getDefaultInterface().getAdress() + ":8080/get?file=" + fileName)
                 .file();
         return file.toURI().toString();
     }
