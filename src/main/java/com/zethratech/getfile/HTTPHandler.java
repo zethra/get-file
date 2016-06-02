@@ -8,13 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.net.URLDecoder;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class HTTPHandler extends AbstractHandler {
@@ -30,28 +29,39 @@ public class HTTPHandler extends AbstractHandler {
                        HttpServletResponse response)
             throws IOException, ServletException {
 
-        System.out.println(target);
+//        System.out.println(target);
+        System.out.println(baseRequest.getUri());
         switch (target) {
             case "/get":
                 baseRequest.setHandled(true);
                 if (request.getQueryString() == null) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    System.err.println("No file name in request");
                     return;
                 }
                 Map<String, String> params = queryToMap(request.getQueryString());
-                String fileName = params.get("file");
+                String fileName = URLDecoder.decode(params.get("file"), "ASCII");
                 if (file == null) {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    System.err.println("No file selected");
                     return;
                 }
                 if (fileName == null || !fileName.equals(file.getName())) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    System.err.println("File name did not match selected file");
                     return;
                 }
 
                 response.setContentType("application/octet-stream");
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-                response.getWriter().write(readFile(file.getAbsolutePath(), StandardCharsets.UTF_8));
+                try (OutputStream os = response.getOutputStream()) {
+                    Files.copy(file.toPath(), os);
+                    os.flush();
+                } catch (IOException e) {
+                    System.err.println("Could not open file");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
         }
@@ -104,12 +114,6 @@ public class HTTPHandler extends AbstractHandler {
             }
         }
         return result;
-    }
-
-    private static String readFile(String path, Charset encoding)
-            throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded, encoding);
     }
 
     private static boolean validIP(String ip) {
