@@ -72,7 +72,7 @@ public class Controller {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        File file = QRCode.from("http://" + handler.getDefaultInterface().getAdress() + ":8080/get?file=" + url)
+        File file = QRCode.from("http://" + handler.getDefaultInterface().getAddress() + ":8080/get?file=" + url)
                 .file();
         return file.toURI().toString();
     }

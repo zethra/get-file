@@ -1,33 +1,23 @@
 package com.zethratech.getfile;
 
 public class IpInterface {
-    private String name, adress;
+    private String name, address;
 
-    public IpInterface(){}
-
-    public IpInterface(String name, String adress) {
+    public IpInterface(String name, String address) {
         this.name = name;
-        this.adress = adress;
+        this.address = address;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAdress() {
-        return adress;
-    }
-
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public String getAddress() {
+        return address;
     }
 
     @Override
     public String toString() {
-        return getName() + " - " + getAdress();
+        return getName() + " - " + getAddress();
     }
 }

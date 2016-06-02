@@ -94,9 +94,9 @@ public class HTTPHandler extends AbstractHandler {
             NetworkInterface e = n.nextElement();
             Enumeration<InetAddress> a = e.getInetAddresses();
             for (; a.hasMoreElements(); ) {
-                InetAddress addr = a.nextElement();
-                if (validIP(addr.getHostAddress()) && !addr.getHostAddress().equals("127.0.0.1"))
-                    interfaces.add(new IpInterface(e.getDisplayName(), addr.getHostAddress()));
+                InetAddress address = a.nextElement();
+                if (validIP(address.getHostAddress()) && !address.getHostAddress().equals("127.0.0.1"))
+                    interfaces.add(new IpInterface(e.getDisplayName(), address.getHostAddress()));
             }
         }
         if (defaultInterface == null)
