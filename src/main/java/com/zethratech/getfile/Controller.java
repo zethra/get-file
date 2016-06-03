@@ -39,6 +39,8 @@ public class Controller {
                 server.start();
             } catch (Exception e) {
                 e.printStackTrace();
+                qrCode.setImage(new Image(String.valueOf(getClass().getResource("/file-upload-icon.png"))));
+                return;
             }
         }
         handler.setFile(selectedFile);
