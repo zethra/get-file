@@ -95,7 +95,7 @@ public class HTTPHandler extends AbstractHandler {
             Enumeration<InetAddress> a = e.getInetAddresses();
             for (; a.hasMoreElements(); ) {
                 InetAddress address = a.nextElement();
-                if (validIP(address.getHostAddress()) && !address.getHostAddress().equals("127.0.0.1"))
+                if (validIP(address.getHostAddress()) && !address.getHostAddress().startsWith("127"))
                     interfaces.add(new IpInterface(e.getDisplayName(), address.getHostAddress()));
             }
         }
